@@ -2,13 +2,18 @@
 
 public class BazaarMessage
 {
-    public required string Sender { get; set; }
+    public Guid Id { get; private init; } = Guid.NewGuid();
 
-    public string? Recipient { get; set; }
+    public required string Sender { get; set; }
+    public required Guid SenderId { get; set; }
+
+    public Guid? EncryptionKeyId { get; set; }
 
     public string? Message { get; set; }
 
+    public BazaarPairRequest? PairRequest { get; set; }
+
+    public BazaarPairResponse? PairResponse { get; set; }
+
     public string? Filename { get; set; }
-
-
 }

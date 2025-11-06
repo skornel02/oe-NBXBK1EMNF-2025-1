@@ -1,10 +1,14 @@
 using diffieHellmanBazaar.Components;
+using diffieHellmanBazaar.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<BazaarService>();
+builder.Services.AddSingleton<EncryptionService>();
 
 var app = builder.Build();
 

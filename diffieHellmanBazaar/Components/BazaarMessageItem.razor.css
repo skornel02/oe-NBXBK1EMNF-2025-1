@@ -1,0 +1,8 @@
+﻿::highlight(non-alphanumeric) {
+    color: blue;
+    text-decoration: underline;
+}
+
+p {
+    margin: 0;
+}

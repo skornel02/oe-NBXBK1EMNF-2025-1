@@ -1,0 +1,69 @@
+﻿<dialog class="window d-flex flex-column" id="error-window">
+	<div class="title-bar">
+		<div class="title-bar-text">Error</div>
+		<div class="title-bar-controls">
+			<button aria-label="Close" @onclick="HandleClose"></button>
+		</div>
+	</div>
+	<div class="window-body d-flex flex-column flex-grow-1">
+		<div class="d-flex">
+			<!-- XP error icon -->
+			@if (Type == DialogType.Error)
+			{
+				<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="16" cy="16" r="15" stroke="black" stroke-width="2" fill="#FF0000" />
+					<line x1="10" y1="10" x2="22" y2="22" stroke="white" stroke-width="2" />
+					<line x1="22" y1="10" x2="10" y2="22" stroke="white" stroke-width="2" />
+				</svg>
+			}
+			else if (Type == DialogType.Warning)
+			{
+				<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="16" cy="16" r="15" stroke="black" stroke-width="2" fill="#FFFF00" />
+					<line x1="16" y1="8" x2="16" y2="20" stroke="black" stroke-width="2" />
+					<circle cx="16" cy="24" r="2" fill="black" />
+				</svg>
+			}
+			else
+			{
+				<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="16" cy="16" r="15" stroke="black" stroke-width="2" fill="#0000FF" />
+					<line x1="16" y1="8" x2="16" y2="20" stroke="white" stroke-width="2" />
+					<circle cx="16" cy="24" r="2" fill="white" />
+				</svg>
+			}
+
+			<div class="ms-3">
+				<p><strong>An error has occurred:</strong> @Message</p>
+			</div>
+		</div>
+		<div class="mt-auto d-flex justify-content-end">
+			<button @onclick="HandleOk">OK</button>
+		</div>
+	</div>
+</dialog>
+
+<script>
+	document.getElementById('error-window').showModal();
+</script>
+
+@code {
+	[Parameter]
+	public string? Message { get; set; }
+
+	public enum DialogType
+	{
+		Info,
+		Warning,
+		Error,
+	}
+
+	[Parameter]
+	public DialogType Type { get; set; }
+
+	[Parameter]
+	public EventCallback HandleClose { get; set; }
+
+	[Parameter]
+	public EventCallback HandleOk { get; set; }
+}

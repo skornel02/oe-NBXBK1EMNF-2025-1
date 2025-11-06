@@ -1,0 +1,78 @@
+﻿@using diffieHellmanBazaar.Models
+@using diffieHellmanBazaar.Services
+
+<p id="message-@Message.Id">
+	@(Message.Sender)&gt;
+	@foreach (var line in Lines)
+	{
+		@if (Message.EncryptionKeyId is not null && _decrypted)
+		{
+			<text>🔓</text>
+		}
+		else if (Message.EncryptionKeyId is not null && _decryptionFailed)
+		{
+			<text>🔒⛔</text>
+		}
+		else if (Message.EncryptionKeyId is not null)
+		{
+			<text>🔒</text>
+		}
+		<text>@line</text>
+		<br />
+	}
+	@if (Message.PairRequest is not null)
+	{
+		<button @onclick="() => OnPairRequest.InvokeAsync(Message)">Add me as friend</button>
+	}
+	@if (Message.PairResponse is not null)
+	{
+
+		@if (SecretKeys.ContainsKey(Message.Id))
+		{
+			<button disabled>Friend request accepted</button>
+		}
+		else
+		{
+			<button @onclick="() => OnPairResponse.InvokeAsync(Message)">Accept friend request</button>
+		}
+	}
+</p>
+
+@code {
+	[Parameter]
+	public required EncryptionService EncryptionService { get; set; }
+
+	[Parameter]
+	public required Dictionary<Guid, BazaarSecretExchange> SecretKeys { get; set; }
+
+	[Parameter]
+	public required BazaarMessage Message { get; set; }
+
+	[Parameter]
+	public EventCallback<BazaarMessage> OnPairRequest { get; set; }
+
+	[Parameter]
+	public EventCallback<BazaarMessage> OnPairResponse { get; set; }
+
+	private bool _decrypted;
+	private bool _decryptionFailed;
+
+	public string[] Lines
+	{
+		get
+		{
+			var message = Message?.Message ?? "";
+
+			if (Message?.EncryptionKeyId is not null && SecretKeys.ContainsKey(Message.EncryptionKeyId.Value))
+			{
+				var encrpytionExchange = SecretKeys[Message.EncryptionKeyId.Value];
+				message = EncryptionService.DecryptMessage(message, 
+					encrpytionExchange.CommonSecret, 
+					ref _decryptionFailed);
+				_decrypted = !_decryptionFailed;
+			}
+
+			return message.Split('\n').ToArray();
+		}
+	}
+}

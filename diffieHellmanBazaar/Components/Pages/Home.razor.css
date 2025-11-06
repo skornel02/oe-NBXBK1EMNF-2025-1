@@ -1,0 +1,14 @@
+﻿#page {
+    background: url('images/bliss.jpg');
+    background-size: cover;
+    background-position: bottom center;
+}
+
+#messages-window > .window-body {
+    margin: 0px;
+    background-color: #000;
+    color: #fff;
+    font-size: 1rem;
+    font-family: "Perfect DOS VGA 437 Win";
+    scroll-behavior: smooth;
+}

@@ -1,0 +1,13 @@
+﻿
+
+#error-window {
+    width: 300px;
+    height: 150px;
+    z-index: 100;
+    border: unset;
+}
+
+::backdrop {
+    background: #ababab;
+    opacity: 0.7;
+}
