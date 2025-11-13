@@ -1,4 +1,6 @@
-﻿namespace diffieHellmanBazaar.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace diffieHellmanBazaar.Models;
 
 public class BazaarMessage
 {
@@ -16,4 +18,8 @@ public class BazaarMessage
     public BazaarPairResponse? PairResponse { get; set; }
 
     public string? Filename { get; set; }
+    public Guid? FileId { get; set; }
+
+    [MemberNotNullWhen(true, nameof(Filename), nameof(FileId))]
+    public bool HasFile { get; set; }
 }

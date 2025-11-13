@@ -4,6 +4,7 @@
 @inject IJSRuntime js
 @inject BazaarService bazaarService
 @inject EncryptionService encryptionService
+@inject ILogger<Home> logger
 
 <PageTitle>Home</PageTitle>
 
@@ -26,6 +27,7 @@
 			{
 				<BazaarMessageItem Message="message"
 								   EncryptionService="encryptionService"
+								   JS="js"
 								   SecretKeys="_knownSecrets"
 								   OnPairRequest="SendPairResponseMessage"
 								   OnPairResponse="SendPairAcceptedMessage" />
@@ -39,124 +41,123 @@
 		</div>
 	</div>
 
-	<div class="window d-flex flex-column h-50" id="control-window" style="margin-right: -1rem; max-width: 600px;">
-		<div class="title-bar">
-			<div class="title-bar-text">Control Panel</div>
-			<div class="title-bar-controls">
-				<button aria-label="Help"></button>
-				<button id="control-window-toggle" aria-label="Maximize" onclick="toggleControlFullscreen()"></button>
-				<button aria-label="Close"></button>
+	<div class="d-flex flex-row flex-wrap h-50 justify-content-around gap-2">
+		<div class="window d-flex flex-column" style="margin-right: -1rem; width: 33%; min-width: 230px; max-width: 600px;">
+			<div class="title-bar">
+				<div class="title-bar-text">Send message</div>
+				<div class="title-bar-controls">
+					<button aria-label="Help"></button>
+					<button aria-label="Close"></button>
+				</div>
+			</div>
+			<div class="window-body overflow-y-auto">
+				<article>
+					@if (_loginModel is null)
+					{
+						<p>Before you can send messages please log in.</p>
+						<fieldset>
+							<legend>Who are you?</legend>
+							<div>
+								<label>Username:</label>
+								<input @bind="_username" class="w-100" style="max-width: 300px;" />
+							</div>
+						</fieldset>
+						<section class="field-row">
+							<button @onclick="LoginUser">Login</button>
+						</section>
+					}
+					else
+					{
+						<p>Send a message!</p>
+						<fieldset>
+							<div class="field-row-stacked w-100" style="width: 200px">
+								<label for="messagebox">Text message</label>
+								<InputTextArea id="messagebox" rows="4" @bind-Value="_message" class="w-100"></InputTextArea>
+							</div>
+						</fieldset>
+						<fieldset>
+							<div class="field-row-stacked" style="width: 200px">
+								<label for="messagebox">Target</label>
+								<select @bind="_selectedSecret">
+									<option value="" selected>Everyone</option>
+									@foreach (var (id, secret) in _knownSecrets)
+									{
+										<option value="@id">@secret.FriendName (#@secret.SequenceNumber)</option>
+									}
+								</select>
+							</div>
+						</fieldset>
+						<fieldset>
+							<div class="field-row-stacked" style="width: 200px">
+								<label for="fileupload">Attach file (optional)</label>
+								<InputFile type="file" id="fileupload" onchange="OnFileUpload" />
+							</div>
+						</fieldset>
+						<section class="field-row">
+							<button @onclick="SendBazaarMessage">Send</button>
+						</section>
+
+						<section class="field-row">
+							<button @onclick="SendPairRequestMessage">Send Friend Request</button>
+						</section>
+					}
+				</article>
 			</div>
 		</div>
-		<div class="window-body overflow-y-auto">
-			<menu role="tablist" class="">
-				<button aria-selected="@(_selectedTab == "send-message" ? "true" : "false")"
-						@onclick='() => _selectedTab = "send-message"'
-						aria-controls="send-message">
-					Send message
-				</button>
-				<button aria-selected="@(_selectedTab == "friends" ? "true" : "false")"
-						@onclick='() => _selectedTab = "friends"'
-						aria-controls="friends">
-					Friends
-				</button>
-				<button aria-selected="@(_selectedTab == "settings" ? "true" : "false")"
-						@onclick='() => _selectedTab = "settings"'
-						aria-controls="settings">
-					Settings
-				</button>
-			</menu>
-			<article role="tabpanel" id="send-message" hidden="@(_selectedTab != "send-message")">
-				@if (_loginModel is null)
-				{
-					<p>Before you can send messages please log in.</p>
-					<fieldset>
-						<legend>Who are you?</legend>
-						<div>
-							<label>Username:</label>
-							<input @bind="_username" class="w-100" style="max-width: 300px;" />
-						</div>
-					</fieldset>
-					<section class="field-row">
-						<button @onclick="LoginUser">Login</button>
-					</section>
-				}
-				else
-				{
-					<p>Send a message!</p>
-					<fieldset>
-						<div class="field-row-stacked" style="width: 200px">
-							<label for="messagebox">Text message</label>
-							<textarea id="messagebox" rows="4" @bind="_message" class="w-100"></textarea>
-						</div>
-					</fieldset>
-					<fieldset>
-						<div class="field-row-stacked" style="width: 200px">
-							<label for="fileupload">Attach file (optional)</label>
-							<input type="file" id="fileupload" />
-						</div>
-					</fieldset>
-					<fieldset>
-						<div class="field-row-stacked" style="width: 200px">
-							<label for="messagebox">Target</label>
-							<select @bind="_selectedSecret">
-								<option value="" selected>Everyone</option>
-								@foreach (var (id, secret) in _knownSecrets)
-								{
-									<option value="@id">@secret.FriendName (#@secret.SequenceNumber)</option>
-								}
-							</select>
-						</div>
-					</fieldset>
-					<section class="field-row">
-						<button @onclick="SendBazaarMessage">Send</button>
-					</section>
 
-					<section class="field-row">
-						<button @onclick="SendPairRequestMessage">Send Friend Request</button>
-					</section>
-				}
-			</article>
+		@if (_loginModel is not null)
+		{
+			<div class="window d-flex flex-column" style="margin-right: -1rem; width: 33%; min-width: 230px; max-width: 600px;">
+				<div class="title-bar">
+					<div class="title-bar-text">Friends</div>
+					<div class="title-bar-controls">
+						<button aria-label="Help"></button>
+						<button aria-label="Close"></button>
+					</div>
+				</div>
+				<div class="window-body overflow-y-auto">
+					<article>
+						<p>Your friend connections:</p>
+						<ul class="tree-view">
+							@foreach (var (id, secret) in _knownSecrets)
+							{
+								<li>@secret.FriendName (#@secret.SequenceNumber)</li>
+							}
+							@if (_knownSecrets.Count == 0)
+							{
+								<li class="fst-italic">You have no friends!</li>
+							}
+						</ul>
+					</article>
+				</div>
+			</div>
 
-			<article role="tabpanel" id="friends" hidden="@(_selectedTab != "friends")">
-				@if (_loginModel is null)
-				{
-					<p>Please sign in before you access your friends.</p>
-				}
-				else
-				{
-					<p>Your friend connections:</p>
-					<ul class="tree-view">
-						@foreach (var(id, secret) in _knownSecrets)
-						{
-							<li>@secret.FriendName (#@secret.SequenceNumber)</li>
-						}
-						@if (_knownSecrets.Count == 0)
-						{
-							<li class="fst-italic">You have no friends!</li>
-						}
-					</ul>
-				}
-			</article>
+			<div class="window d-flex flex-column" style="margin-right: -1rem; width: 33%; min-width: 230px; max-width: 600px;">
+				<div class="title-bar">
+					<div class="title-bar-text">Settings</div>
+					<div class="title-bar-controls">
+						<button aria-label="Help"></button>
+						<button aria-label="Close"></button>
+					</div>
+				</div>
+				<div class="window-body overflow-y-auto">
+					<article>
+						<p class="my-2">Your information</p>
+						<fieldset>
+							<p class="m-0">User Id</p>
+							<p style="font-style: italic;">@_loginModel.IdString</p>
+							<p class="m-0">Secret</p>
+							<p style="font-style: italic;">@_loginModel.SecretText</p>
+						</fieldset>
 
-			<article role="tabpanel" id="settings" hidden="@(_selectedTab != "settings")">
-				@if (_loginModel is not null)
-				{
-					<p class="my-2">Your information</p>
-					<fieldset>
-						<p class="m-0">User Id</p>
-						<p style="font-style: italic;">@_loginModel.IdString</p>
-						<p class="m-0">Secret</p>
-						<p style="font-style: italic;">@_loginModel.SecretText</p>
-					</fieldset>
-
-					<section class="field-row">
-						<button @onclick="(() => _loginModel = null)" class="me-1">Logout</button>
-						Sign out of account
-					</section>
-				}
-			</article>
-		</div>
+						<section class="field-row">
+							<button @onclick="(() => _loginModel = null)" class="me-1">Logout</button>
+							Sign out of account
+						</section>
+					</article>
+				</div>
+			</div>
+		}
 	</div>
 
 	<TaskBar />
@@ -166,8 +167,8 @@
 {
 	<MessageDialog Message="@errorMessage"
 				   Type="MessageDialog.DialogType.Error"
-				   HandleClose="() => errorMessage = null"
-				   HandleOk="() => errorMessage = null" />
+				   HandleClose="(() => errorMessage = null)"
+				   HandleOk="(() => errorMessage = null)" />
 }
 
 <script>
@@ -179,14 +180,6 @@
 			messageWindow.requestFullscreen();
 		}
 	}
-	function toggleControlFullscreen() {
-		const controlWindow = document.getElementById("control-window");
-		if (document.fullscreenElement){
-			document.exitFullscreen();
-		} else if (controlWindow.requestFullscreen) {
-			controlWindow.requestFullscreen();
-		}
-	}
 	function scrollToBottomMessage() {
 		const messageWindow = document.querySelector("#messages-window .window-body");
 		messageWindow.scroll(0, messageWindow.scrollHeight);
@@ -196,21 +189,18 @@
 		const icon = document.fullscreenElement ? "Restore" : "Maximize";
 		const messageWindow = document.getElementById("messages-window-toggle");
 		messageWindow.setAttribute('aria-label', icon);
-		const controlWindow = document.getElementById("control-window-toggle");
-		controlWindow.setAttribute('aria-label', icon);
-		console.log(icon)
 	});
 </script>
 
 @code {
-	private string _selectedTab = "send-message";
 	private List<BazaarMessage> _messages = [];
 
 	private string _username = string.Empty;
 	private LoginModel? _loginModel;
 
 	private string _message = string.Empty;
-	private string? _fileId;
+	private string? _fileName;
+	private Guid? _fileId;
 	private Guid? _selectedSecret;
 
 	private string? errorMessage;
@@ -265,7 +255,7 @@
 
 		if (_selectedSecret is not null && _knownSecrets.TryGetValue(_selectedSecret.Value, out var secret))
 		{
-			message = encryptionService.EncryptMessage(message, secret.CommonSecret); 
+			message = encryptionService.EncryptMessage(message, secret.CommonSecret);
 			encrypted = true;
 		}
 
@@ -273,7 +263,9 @@
 		{
 			Sender = _loginModel.Username,
 			SenderId = _loginModel.Id,
-			Filename = _fileId,
+			Filename = _fileName,
+			FileId = _fileId,
+			HasFile = _fileId is not null,
 			Message = message,
 			EncryptionKeyId = encrypted ? _selectedSecret : null,
 		};
@@ -358,6 +350,36 @@
 		};
 
 		bazaarService.SendMessage(pairMessage);
+	}
+
+	public async Task OnFileUpload(InputFileChangeEventArgs ev)
+	{
+		try
+		{
+			var id = Guid.NewGuid();
+
+			var fileStream = ev.File.OpenReadStream();
+			using var memoryStream = new MemoryStream();
+			await fileStream.CopyToAsync(memoryStream);
+			var bytes = memoryStream.ToArray();
+
+			var content = Convert.ToBase64String(bytes);
+
+			if (_selectedSecret is not null && _knownSecrets.TryGetValue(_selectedSecret.Value, out var secret))
+			{
+				content = encryptionService.EncryptMessage(content, secret.CommonSecret);
+			}
+
+			await File.WriteAllTextAsync($"wwwroot/uploads/{id}", content);
+
+			_fileId = id;
+			_fileName = ev.File.Name;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to upload file");
+			errorMessage = "Uploading the file failed!";
+		}
 	}
 
 	public void ReceiveBazaarMessage(BazaarMessage message)
