@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "diffieHellmanBazaar", "diffieHellmanBazaar.csproj", "{1E5BA6F2-5E1A-41C9-B2C1-F0CFC7C76A01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "poc-password-cracking", "..\poc-password-cracking\poc-password-cracking.csproj", "{70FDF5D3-104F-4662-BA65-95DB0A19D333}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rockyou-finder", "..\rockyou-finder\rockyou-finder.csproj", "{14E66948-8903-44B2-9A4F-6941AFCFDCB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{70FDF5D3-104F-4662-BA65-95DB0A19D333}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70FDF5D3-104F-4662-BA65-95DB0A19D333}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70FDF5D3-104F-4662-BA65-95DB0A19D333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14E66948-8903-44B2-9A4F-6941AFCFDCB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14E66948-8903-44B2-9A4F-6941AFCFDCB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14E66948-8903-44B2-9A4F-6941AFCFDCB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14E66948-8903-44B2-9A4F-6941AFCFDCB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
