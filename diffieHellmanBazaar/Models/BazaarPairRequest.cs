@@ -15,6 +15,14 @@ public class BazaarPairRequest
     public byte[] N { get; init; } = new byte[SecretSize];
     public byte[] G { get; init; } = new byte[SecretSize];
 
+    /// <summary>
+    /// Initializes a new instance of the BazaarPairRequest class using the specified user secret to generate
+    /// cryptographic parameters for a key exchange.
+    /// </summary>
+    /// <remarks>This constructor generates random values for the cryptographic parameters and computes the
+    /// public value required for the key exchange protocol. The provided user secret is used as part of the calculation
+    /// to ensure uniqueness and security of the generated parameters.</remarks>
+    /// <param name="userSecret">A byte array containing the user's secret value used in the key exchange computation. Must not be null or empty.</param>
     public BazaarPairRequest(byte[] userSecret)
     {
         RandomNumberGenerator.Fill(N);

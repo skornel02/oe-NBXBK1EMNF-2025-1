@@ -6,7 +6,7 @@ Console.WriteLine("Hello, World!");
 
 var file = "rockyou.txt";
 
-var passwordToMatch = "fuckmedaddy123";
+var passwordToMatch = "bestpasshass";
 var passwordToMatchHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(passwordToMatch));
 
 var timer = new Stopwatch();

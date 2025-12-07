@@ -6,7 +6,7 @@
 @inject EncryptionService encryptionService
 @inject ILogger<Home> logger
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Diffie-Hellman bazaar</PageTitle>
 
 <div class="d-flex flex-column vh-100 p-5 gap-3" id="page">
 	<div class="window d-flex flex-column h-50" id="messages-window" style="margin-left: -1rem;">
@@ -144,6 +144,8 @@
 					<article>
 						<p class="my-2">Your information</p>
 						<fieldset>
+							<p class="m-0">User name</p>
+							<p style="font-style: italic;">@_loginModel.Username</p>
 							<p class="m-0">User Id</p>
 							<p style="font-style: italic;">@_loginModel.IdString</p>
 							<p class="m-0">Secret</p>

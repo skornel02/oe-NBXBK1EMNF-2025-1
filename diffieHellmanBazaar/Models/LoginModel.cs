@@ -10,6 +10,12 @@ public class LoginModel
     public required string Username { get; init; }
     public byte[] Secret { get; init; } = new byte[SecretSize];
 
+    /// <summary>
+    /// Initializes a new instance of the LoginModel class and generates a random secret value for authentication
+    /// purposes.
+    /// </summary>
+    /// <remarks>The generated secret is intended to enhance security by providing a unique value for each
+    /// instance. This constructor should be used when a fresh authentication context is required.</remarks>
     public LoginModel()
     {
         RandomNumberGenerator.Fill(Secret);

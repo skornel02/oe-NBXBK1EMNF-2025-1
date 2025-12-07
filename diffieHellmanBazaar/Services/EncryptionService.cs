@@ -1,10 +1,15 @@
-﻿using System.Buffers.Text;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace diffieHellmanBazaar.Services;
 
+/// <summary>
+/// Provides methods for encrypting and decrypting messages using symmetric encryption with a shared secret.
+/// </summary>
+/// <remarks>This service uses AES symmetric encryption and requires a shared secret for both encryption and
+/// decryption. The encrypted message format includes the initialization vector (IV) and ciphertext, separated by an
+/// exclamation mark. Logging is performed for both successful and failed operations.</remarks>
+/// <param name="_logger">The logger used to record informational and error messages during encryption and decryption operations.</param>
 public class EncryptionService(ILogger<EncryptionService> _logger)
 {
     public string EncryptMessage(string message, byte[] commonSecret)

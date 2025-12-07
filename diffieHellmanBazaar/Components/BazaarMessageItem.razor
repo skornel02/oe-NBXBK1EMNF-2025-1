@@ -74,6 +74,7 @@
 		{
 			var message = Message?.Message ?? "";
 
+			// Attempt decryption if an encryption key is associated with the message
 			if (Message?.EncryptionKeyId is not null && SecretKeys.ContainsKey(Message.EncryptionKeyId.Value))
 			{
 				var encrpytionExchange = SecretKeys[Message.EncryptionKeyId.Value];
@@ -96,6 +97,7 @@
 
 		var fileData = File.ReadAllText($"wwwroot/uploads/{Message.FileId}");
 
+		// Attempt decryption if an encryption key is associated with the message
 		if (Message.EncryptionKeyId is not null && SecretKeys.ContainsKey(Message.EncryptionKeyId.Value))
 		{
 			var encrpytionExchange = SecretKeys[Message.EncryptionKeyId.Value];
@@ -119,7 +121,8 @@
 
 			await JS.InvokeVoidAsync("downloadFileFromStream", Message.Filename, streamRef);
 
-		} catch (Exception ex)
+		} 
+		catch (Exception ex)
 		{
 			
 		}

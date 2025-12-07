@@ -3,10 +3,11 @@ using diffieHellmanBazaar.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure razor components and services.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add application services.
 builder.Services.AddSingleton<BazaarService>();
 builder.Services.AddSingleton<EncryptionService>();
 
@@ -21,7 +22,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 
